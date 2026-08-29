@@ -1,0 +1,8 @@
+.git
+.github
+.env
+data
+state
+*.tar
+*.tar.gz
+warp-debugging-info.zip
