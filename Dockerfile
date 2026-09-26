@@ -15,10 +15,12 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
+        cron \
         curl \
         dbus \
         gnupg \
         iproute2 \
+        logrotate \
         nftables \
         tini \
     && curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg \
@@ -33,7 +35,15 @@ RUN apt-get update \
        fi \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /etc/machine-id \
-    && touch /etc/machine-id
+    && touch /etc/machine-id \
+    && printf '%s\n' \
+        '/var/log/cloudflare-warp/warp-svc.console.log {' \
+        '    size 50M' \
+        '    rotate 3' \
+        '    copytruncate' \
+        '    compress' \
+        '    missingok' \
+        '}' > /etc/logrotate.d/warp-console
 
 COPY entrypoint.sh healthcheck.sh /usr/local/bin/
 RUN chmod 0755 /usr/local/bin/entrypoint.sh /usr/local/bin/healthcheck.sh

@@ -18,6 +18,11 @@ ln -sf /etc/machine-id /var/lib/dbus/machine-id
 
 dbus-daemon --system --fork --nopidfile
 
+# The daemon appends its full log stream to the console file for the life of
+# the container. cron runs the daily logrotate, which caps the file at
+# ~50M active plus three compressed archives (see /etc/logrotate.d/warp-console).
+cron
+
 export STATE_DIRECTORY="$state_dir"
 export RUNTIME_DIRECTORY="$runtime_dir"
 export LOGS_DIRECTORY="$log_dir"
